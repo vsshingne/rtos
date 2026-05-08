@@ -50,3 +50,84 @@ mux_8_1 m5(cout,
            A,B,C);
 
 endmodule
+
+
+
+module mux8(y, a, sel);
+
+output y;
+input [7:0] a;
+input [2:0] sel;
+
+wire [7:0] t;
+
+assign t[0] = (~sel[0] & ~sel[1] & ~sel[2] & a[0]);
+assign t[1] = ( sel[0] & ~sel[1] & ~sel[2] & a[1]);
+assign t[2] = (~sel[0] &  sel[1] & ~sel[2] & a[2]);
+assign t[3] = ( sel[0] &  sel[1] & ~sel[2] & a[3]);
+
+assign t[4] = (~sel[0] & ~sel[1] &  sel[2] & a[4]);
+assign t[5] = ( sel[0] & ~sel[1] &  sel[2] & a[5]);
+assign t[6] = (~sel[0] &  sel[1] &  sel[2] & a[6]);
+assign t[7] = ( sel[0] &  sel[1] &  sel[2] & a[7]);
+
+assign y = t[0] | t[1] | t[2] | t[3] |
+           t[4] | t[5] | t[6] | t[7];
+
+endmodule
+
+
+module fulladder(s, cout, a, b, c);
+
+output s, cout;
+input a, b, c;
+
+mux8 m1(
+    s,
+    {1'b1,1'b0,1'b0,1'b1,1'b0,1'b1,1'b1,1'b0},
+    {a,b,c}
+);
+
+mux8 m2(
+    cout,
+    {1'b1,1'b1,1'b1,1'b0,1'b1,1'b0,1'b0,1'b0},
+    {a,b,c}
+);
+
+endmodule
+
+
+
+
+
+
+module mux8(y,a,sel);
+output y;
+input[7:0]a;
+input[2:0]sel;
+reg y;
+always @ (a,sel)
+begin
+case(sel)
+0: y = a[0];
+
+Department of Electronics Engineering, Walchand College of Engineering Sangli
+
+Semester I1 T.Y., Digital System Architecture Lab Manual V_1.0
+1: y = a[1];
+2: y = a[2];
+3: y = a[3];
+4: y = a[4];
+5: y = a[5];
+6: y = a[6];
+7: y = a[7];
+default y=1'bX;
+endcase
+end
+endmodule
+module fulladder(sum,cout,a,b,c);
+output sum,cout;
+input a,b,c;
+mux8 m1(sum,{1'b1,1'b0,1'b0,1'b1,1'b0,1'b1,1'b1,1'b0},{a,b,c});
+mux8 m2(cout,{1'b1,1'b1,1'b1,1'b0,1'b1,1'b0,1'b0,1'b0},{a,b,c});
+endmodule
