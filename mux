@@ -1,0 +1,52 @@
+`timescale 1ns/1ps
+
+module mux4_1(y, a, b, c, d, s1, s0);
+
+input a, b, c, d, s0, s1;
+output y;
+
+wire t1, t2, t3, t4, s00, s11;
+
+not (s00, s0);
+not (s11, s1);
+
+and (t1, a, s11, s00);
+and (t2, b, s11, s0);
+and (t3, c, s1, s00);
+and (t4, d, s1, s0);
+
+or (y, t1, t2, t3, t4);
+
+endmodule
+
+
+module mux_8_1(y, a, b, c, d, e, f, g, h, s2, s1, s0);
+
+input a, b, c, d, e, f, g, h;
+input s2, s1, s0;
+output y;
+
+wire w1, w2;
+
+mux4_1 m1(w1, a, b, c, d, s1, s0);
+mux4_1 m2(w2, e, f, g, h, s1, s0);
+
+mux4_1 m3(y, w1, 0, 0, w2, s2, s2);
+
+endmodule
+
+
+module fulladder(sum, cout, A, B, C);
+
+input A, B, C;
+output sum, cout;
+
+mux_8_1 m4(sum,
+           0,1,1,0,1,0,0,1,
+           A,B,C);
+
+mux_8_1 m5(cout,
+           0,0,0,1,0,1,1,1,
+           A,B,C);
+
+endmodule
