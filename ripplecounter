@@ -1,0 +1,42 @@
+`timescale 1ns/1ps
+
+module counter_ripple(q, clk, reset);
+
+output [3:0] q;
+input clk, reset;
+
+tff t1(q[0], clk, reset);
+tff t2(q[1], q[0], reset);
+tff t3(q[2], q[1], reset);
+tff t4(q[3], q[2], reset);
+
+endmodule
+
+
+module tff(q, clk, reset);
+
+output q;
+input clk, reset;
+
+wire d;
+
+dff d1(q, d, clk, reset);
+not n1(d, q);
+
+endmodule
+
+
+module dff(q, d, clk, reset);
+
+output reg q;
+input d, clk, reset;
+
+always @(posedge reset or negedge clk)
+begin
+    if(reset)
+        q = 1'b0;
+    else
+        q = d;
+end
+
+endmodule
