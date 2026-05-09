@@ -16,3 +16,37 @@ end
 assign so = q[3];
 
 endmodule
+
+
+module tb_siso;
+
+reg clk, rst, si;
+wire so;
+
+siso uut (
+    .clk(clk),
+    .rst(rst),
+    .si(si),
+    .so(so)
+);
+
+always #5 clk = ~clk;
+
+initial
+begin
+    clk = 0;
+    rst = 1;
+    si  = 0;
+
+    #10 rst = 0;
+
+    si = 1; #10;
+    si = 0; #10;
+    si = 1; #10;
+    si = 1; #10;
+
+    #40;
+
+end
+
+endmodule
