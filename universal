@@ -1,0 +1,159 @@
+`timescale 1ns/1ps
+
+module uni_shift_8b(op, clk, rst_a, load, sh_ro_lt_rt, ip);
+
+output reg [7:0] op;
+
+input load;
+input [1:0] flag;
+input [7:0] ip;
+input clk, rst_a;
+
+reg [7:0] temp;
+
+always @(posedge clk or posedge rst_a)
+begin
+
+    if(rst_a)
+    begin
+        op <= 8'b00000000;
+        temp <= 8'b00000000;
+    end
+
+    else
+    begin
+
+        case(load)
+
+            1'b1:
+            begin
+                temp <= ip;
+                op <= ip;
+            end
+
+            1'b0:
+            begin
+
+                case(flag)
+
+                    2'b00:
+                        op <= temp << 1;
+
+                    2'b01:
+                        op <= temp >> 1;
+
+                    2'b10:
+                        op <= {temp[6:0], temp[7]};
+
+                    2'b11:
+                        op <= {temp[0], temp[7:1]};
+
+                endcase
+
+            end
+
+        endcase
+
+    end
+
+end
+
+endmodule
+
+
+`timescale 1ns/1ps
+
+module uni_shift_8b_tst;
+
+reg [7:0] ip;
+reg [1:0] flag;
+reg load, rst_a, clk;
+
+wire [7:0] op;
+
+uni_shift_8b u1 (
+    .op(op),
+    .ip(ip),
+    .flag(flag),
+    .load(load),
+    .rst_a(rst_a),
+    .clk(clk)
+);
+
+initial
+begin
+    clk = 1'b1;
+
+    forever
+        #50 clk = ~clk;
+end
+
+initial
+begin
+
+    ip = 8'b11001100;
+    rst_a = 1'b1;
+    load = 1'b1;
+    flag = 2'b00;
+
+    #100;
+
+    ip = 8'b10001100;
+    rst_a = 1'b0;
+    load = 1'b1;
+    flag = 2'b01;
+
+    #100;
+
+    ip = 8'b11001100;
+    load = 1'b0;
+    flag = 2'b01;
+
+    #100;
+
+    ip = 8'b10101101;
+    load = 1'b1;
+    flag = 2'b01;
+
+    #100;
+
+    ip = 8'b11001101;
+    load = 1'b0;
+    flag = 2'b01;
+
+    #100;
+
+    ip = 8'b11101100;
+    load = 1'b1;
+    flag = 2'b10;
+
+    #100;
+
+    ip = 8'b11110000;
+    load = 1'b0;
+    flag = 2'b10;
+
+    #100;
+
+    ip = 8'b11001100;
+    load = 1'b1;
+    flag = 2'b11;
+
+    #100;
+
+    ip = 8'b11001101;
+    load = 1'b0;
+    flag = 2'b11;
+
+    #100;
+
+    ip = 8'b11001000;
+    load = 1'b1;
+    flag = 2'b11;
+
+    #100;
+
+
+end
+
+endmodule
