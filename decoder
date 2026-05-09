@@ -1,0 +1,74 @@
+module decoder(a, en, y);
+
+input [2:0] a;
+input en;
+
+output reg [7:0] y;
+
+always @(a or en)
+begin
+
+    if(en)
+        y = 8'b11111111;
+
+    else
+    begin
+        case(a)
+
+            3'b000: y = 8'b01111111;
+            3'b001: y = 8'b10111111;
+            3'b010: y = 8'b11011111;
+            3'b011: y = 8'b11101111;
+            3'b100: y = 8'b11110111;
+            3'b101: y = 8'b11111011;
+            3'b110: y = 8'b11111101;
+            3'b111: y = 8'b11111110;
+
+        endcase
+    end
+
+end
+
+endmodule
+
+`timescale 1ns/1ps
+
+module tb_decoder;
+
+reg [2:0] a;
+reg en;
+
+wire [7:0] y;
+
+decoder uut (
+    .a(a),
+    .en(en),
+    .y(y)
+);
+
+initial
+begin
+
+    en = 1;
+
+    a = 3'b000; #10;
+    a = 3'b001; #10;
+    a = 3'b010; #10;
+
+    en = 0;
+
+    a = 3'b000; #10;
+    a = 3'b001; #10;
+    a = 3'b010; #10;
+    a = 3'b011; #10;
+    a = 3'b100; #10;
+    a = 3'b101; #10;
+    a = 3'b110; #10;
+    a = 3'b111; #10;
+
+end
+
+endmodule
+
+
+          
