@@ -1,0 +1,72 @@
+`timescale 1ns/1ps
+
+module UP_Down_counter(out, up, clk, reset);
+
+output reg [3:0] out;
+
+input up, clk, reset;
+
+initial
+begin
+    out = 4'b0000;
+end
+
+always @(posedge clk)
+begin
+    if(reset)
+    begin
+        out <= 4'b0000;
+    end
+
+    else if(up)
+    begin
+        out <= out + 1'b1;
+    end
+
+    else
+    begin
+        out <= out - 1'b1;
+    end
+end
+
+endmodule
+
+
+`timescale 1ns/1ps
+
+module tb_UP_Down_counter;
+
+reg up;
+reg clk;
+reg reset;
+
+wire [3:0] out;
+
+UP_Down_counter uut (
+    .out(out),
+    .up(up),
+    .clk(clk),
+    .reset(reset)
+);
+
+always #5 clk = ~clk;
+
+initial
+begin
+    clk = 0;
+    reset = 1;
+    up = 1;
+
+    #10;
+    reset = 0;
+
+    up = 1;
+    #50;
+
+    up = 0;
+    #50;
+
+    $finish;
+end
+
+endmodule
