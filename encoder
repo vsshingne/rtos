@@ -1,0 +1,82 @@
+module encoder(e1, e2, e3, a0, a1, a2,
+               o0, o1, o2, o3, o4, o5, o6, o7);
+
+input e1, e2, e3;
+input a0, a1, a2;
+
+output o0, o1, o2, o3, o4, o5, o6, o7;
+
+wire not_a0, not_a1, not_a2;
+wire not_e1, not_e2;
+wire et;
+
+not (not_a0, a0);
+not (not_a1, a1);
+not (not_a2, a2);
+
+not (not_e1, e1);
+not (not_e2, e2);
+
+and (et, not_e1, not_e2, e3);
+
+nand (o0, et, not_a2, not_a1, not_a0);
+nand (o1, et, not_a2, not_a1, a0);
+nand (o2, et, not_a2, a1, not_a0);
+nand (o3, et, not_a2, a1, a0);
+
+nand (o4, et, a2, not_a1, not_a0);
+nand (o5, et, a2, not_a1, a0);
+nand (o6, et, a2, a1, not_a0);
+nand (o7, et, a2, a1, a0);
+
+endmodule
+
+
+`timescale 1ns/1ps
+
+module tb_encoder;
+
+reg e1, e2, e3;
+reg a0, a1, a2;
+
+wire o0, o1, o2, o3, o4, o5, o6, o7;
+
+encoder uut(
+    .e1(e1),
+    .e2(e2),
+    .e3(e3),
+    .a0(a0),
+    .a1(a1),
+    .a2(a2),
+    .o0(o0),
+    .o1(o1),
+    .o2(o2),
+    .o3(o3),
+    .o4(o4),
+    .o5(o5),
+    .o6(o6),
+    .o7(o7)
+);
+
+initial
+begin
+
+    e1 = 0;
+    e2 = 0;
+    e3 = 1;
+
+    a2 = 0; a1 = 0; a0 = 0; #10;
+    a2 = 0; a1 = 0; a0 = 1; #10;
+    a2 = 0; a1 = 1; a0 = 0; #10;
+    a2 = 0; a1 = 1; a0 = 1; #10;
+
+    a2 = 1; a1 = 0; a0 = 0; #10;
+    a2 = 1; a1 = 0; a0 = 1; #10;
+    a2 = 1; a1 = 1; a0 = 0; #10;
+    a2 = 1; a1 = 1; a0 = 1; #10;
+
+    $finish;
+
+end
+
+endmodule
