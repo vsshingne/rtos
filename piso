@@ -21,3 +21,41 @@ end
 assign so = q[3];
 
 endmodule
+
+module tb_piso;
+
+reg clk, rst, load;
+reg [3:0] pi;
+wire so;
+
+piso uut (
+    .clk(clk),
+    .rst(rst),
+    .load(load),
+    .pi(pi),
+    .so(so)
+);
+
+always #5 clk = ~clk;
+
+initial
+begin
+    clk = 0;
+    rst = 1;
+    load = 0;
+    pi = 4'b0000;
+
+    #10 rst = 0;
+
+    load = 1;
+    pi = 4'b1011;
+    #10;
+
+    load = 0;
+
+    #50;
+
+    $finish;
+end
+
+endmodule
